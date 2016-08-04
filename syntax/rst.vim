@@ -104,6 +104,7 @@ function! s:DefineInlineMarkup(name, start, middle, end)
   call s:DefineOneInlineMarkup(a:name, a:start, middle, a:end, '{', '}')
   call s:DefineOneInlineMarkup(a:name, a:start, middle, a:end, '<', '>')
   call s:DefineOneInlineMarkup(a:name, a:start, middle, a:end, '’', '’')
+  " TODO: Additional Unicode Pd, Po, Pi, Pf, Ps characters
 
   call s:DefineOneInlineMarkup(a:name, a:start, middle, a:end, '\%(^\|\s\|[/:]\)', '')
 
