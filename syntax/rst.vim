@@ -2,6 +2,7 @@
 " Language: reStructuredText documentation format
 " Maintainer: Marshall Ward <marshall.ward@gmail.com>
 " Previous Maintainer: Nikolai Weibull <now@bitwi.se>
+" Website: https://github.com/marshallward/vim-restructuredtext
 " Latest Revision: 2016-06-17
 
 if exists("b:current_syntax")
@@ -188,11 +189,8 @@ hi def link rstHyperlinkTarget              String
 hi def link rstExDirective                  String
 hi def link rstSubstitutionDefinition       rstDirective
 hi def link rstDelimiter                    Delimiter
-hi def link rstEmphasis                     Underlined
-hi def link rstStrongEmphasis               Special
-" TODO Append these atttributes somehow
-"hi def rstEmphasis term=italic cterm=italic gui=italic
-"hi def rstStrongEmphasis term=bold cterm=bold gui=bold
+hi def rstEmphasis ctermfg=13 term=italic cterm=italic gui=italic
+hi def rstStrongEmphasis ctermfg=1 term=bold cterm=bold gui=bold
 hi def link rstInterpretedTextOrHyperlinkReference  Identifier
 hi def link rstInlineLiteral                String
 hi def link rstSubstitutionReference        PreProc
