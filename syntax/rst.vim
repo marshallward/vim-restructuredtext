@@ -52,6 +52,9 @@ syn match   rstExplicitMarkup       '^\s*\.\.\_s'
 
 let s:ReferenceName = '[[:alnum:]]\+\%([_.-][[:alnum:]]\+\)*'
 
+" TODO: This needs to be checked against the specification
+let s:PhraseReference = '[[:alnum:]][[:alnum:][:space:]]\+\%([_.-][[:alnum:]]\+\)*'
+
 syn keyword     rstTodo             contained FIXME TODO XXX NOTE
 
 execute 'syn region rstComment contained' .
@@ -83,7 +86,7 @@ execute 'syn region rstExDirective contained matchgroup=rstDirective' .
       \ ' end=+^\s\@!+ contains=@rstCruft,rstLiteralBlock'
 
 execute 'syn match rstSubstitutionDefinition contained' .
-      \ ' /|' . s:ReferenceName . '|\_s\+/ nextgroup=@rstDirectives'
+      \ ' /|' . s:PhraseReference . '|\_s\+/ nextgroup=@rstDirectives'
 
 function! s:DefineOneInlineMarkup(name, start, middle, end, char_left, char_right)
   execute 'syn region rst' . a:name .
