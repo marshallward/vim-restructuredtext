@@ -3,7 +3,7 @@
 " Maintainer: Marshall Ward <marshall.ward@gmail.com>
 " Previous Maintainer: Nikolai Weibull <now@bitwi.se>
 " Website: https://github.com/marshallward/vim-restructuredtext
-" Latest Revision: 2016-08-18
+" Latest Revision: 2017-02-18
 
 if exists("b:current_syntax")
   finish
@@ -128,6 +128,7 @@ call s:DefineInlineMarkup('SubstitutionReference', '|', '|', '|_\{0,2}')
 call s:DefineInlineMarkup('InlineInternalTargets', '_`', '`', '`')
 
 syn match   rstSections "^\%(\([=`:.'"~^_*+#-]\)\1\+\n\)\=.\+\n\([=`:.'"~^_*+#-]\)\2\+$"
+    \ contains=@Spell
 
 " TODO: Can’t remember why these two can’t be defined like the ones above.
 execute 'syn match rstFootnoteReference contains=@NoSpell' .
