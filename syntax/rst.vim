@@ -50,7 +50,10 @@ syn cluster rstDirectives           contains=rstFootnote,rstCitation,
 syn match   rstExplicitMarkup       '^\s*\.\.\_s'
       \ nextgroup=@rstDirectives,rstComment,rstSubstitutionDefinition
 
-let s:ReferenceName = '[[:alnum:]]\+\%([_.-][[:alnum:]]\+\)*'
+" "Simple reference names are single words consisting of alphanumerics plus
+" isolated (no two adjacent) internal hyphens, underscores, periods, colons
+" and plus signs."
+let s:ReferenceName = '[[:alnum:]]\%([-_.:+]\?[[:alnum:]]\+\)*'
 
 " TODO: This needs to be checked against the specification
 let s:PhraseReference = '[[:alnum:]][[:alnum:][:space:]]\+\%([_.-][[:alnum:]]\+\)*'
