@@ -130,7 +130,23 @@ call s:DefineInlineMarkup('InlineLiteral', '``', "", '``')
 call s:DefineInlineMarkup('SubstitutionReference', '|', '|', '|_\{0,2}')
 call s:DefineInlineMarkup('InlineInternalTargets', '_`', '`', '`')
 
-syn match   rstSections "^\%(\([=`:.'"~^_*+#-]\)\1\+\n\)\=.\+\n\([=`:.'"~^_*+#-]\)\2\+$"
+" Sections are identified through their titles, which are marked up with
+" adornment: "underlines" below the title text, or underlines and matching
+" "overlines" above the title. An underline/overline is a single repeated
+" punctuation character that begins in column 1 and forms a line extending at
+" least as far as the right edge of the title text.
+"
+" It is difficult to count characters in a regex, but we at least special-case
+" the case where the title has at least three characters to require the
+" adornment to have at least three characters as well, in order to handle
+" properly the case of a literal block:
+"
+"    this is the end of a paragraph
+"    ::
+"       this is a literal block
+syn match   rstSections "\v^%(([=`:.'"~^_*+#-])\1+\n)?.{1,2}\n([=`:.'"~^_*+#-])\2+$"
+    \ contains=@Spell
+syn match   rstSections "\v^%(([=`:.'"~^_*+#-])\1{2,}\n)?.{3,}\n([=`:.'"~^_*+#-])\2{2,}$"
     \ contains=@Spell
 
 " TODO: Can’t remember why these two can’t be defined like the ones above.
