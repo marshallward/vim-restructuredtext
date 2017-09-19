@@ -110,10 +110,10 @@ function! s:DefineInlineMarkup(name, start, middle, end)
   call s:DefineOneInlineMarkup(a:name, a:start, middle, a:end, '’', '’')
   " TODO: Additional Unicode Pd, Po, Pi, Pf, Ps characters
 
-  call s:DefineOneInlineMarkup(a:name, a:start, middle, a:end, '\%(^\|\s\|[/:]\)', '')
+  call s:DefineOneInlineMarkup(a:name, a:start, middle, a:end, '\%(^\|\s\|\%ua0\|[/:]\)', '')
 
   execute 'syn match rst' . a:name .
-        \ ' +\%(^\|\s\|[''"([{</:]\)\zs' . a:start .
+        \ ' +\%(^\|\s\|\%ua0\|[''"([{</:]\)\zs' . a:start .
         \ '[^[:space:]' . a:start[strlen(a:start) - 1] . ']'
         \ a:end . '\ze\%($\|\s\|[''")\]}>/:.,;!?\\-]\)+'
 
