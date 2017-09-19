@@ -148,10 +148,10 @@ syn match   rstSections "\v^%(([=`:.'"~^_*+#-])\1{2,}\n)?.{3,}\n([=`:.'"~^_*+#-]
 
 " TODO: Can’t remember why these two can’t be defined like the ones above.
 execute 'syn match rstFootnoteReference contains=@NoSpell' .
-      \ ' +\[\%(\d\+\|#\%(' . s:ReferenceName . '\)\=\|\*\)\]_+'
+      \ ' +\%(\s\|^\)\[\%(\d\+\|#\%(' . s:ReferenceName . '\)\=\|\*\)\]_+'
 
 execute 'syn match rstCitationReference contains=@NoSpell' .
-      \ ' +\[' . s:ReferenceName . '\]_\ze\%($\|\s\|[''")\]}>/:.,;!?\\-]\)+'
+      \ ' +\%(\s\|^\)\[' . s:ReferenceName . '\]_\ze\%($\|\s\|[''")\]}>/:.,;!?\\-]\)+'
 
 execute 'syn match rstHyperlinkReference' .
       \ ' /\<' . s:ReferenceName . '__\=\ze\%($\|\s\|[''")\]}>/:.,;!?\\-]\)/'
