@@ -167,21 +167,62 @@ syn region rstCodeBlock contained matchgroup=rstDirective
 syn cluster rstDirectives add=rstCodeBlock
 
 if !exists('g:rst_syntax_code_list')
-    let g:rst_syntax_code_list = ['vim', 'java', 'cpp', 'lisp', 'php',
-                                \ 'python', 'perl', 'sh']
+    " A mapping from a Vim filetype to a list of alias patterns (pattern
+    " branches to be specific, see ':help /pattern'). E.g. given:
+    "
+    "   let g:rst_syntax_code_list = {
+    "       \ 'cpp': ['cpp', 'c++'],
+    "       \ }
+    "
+    " then the respective contents of the following two rST directives:
+    "
+    "   .. code:: cpp
+    "
+    "       auto i = 42;
+    "
+    "   .. code:: C++
+    "
+    "       auto i = 42;
+    "
+    " will both be highlighted as C++ code. As shown by the latter block
+    " pattern matching will be case-insensitive.
+    let g:rst_syntax_code_list = {
+        \ 'vim': ['vim'],
+        \ 'java': ['java'],
+        \ 'cpp': ['cpp', 'c++'],
+        \ 'lisp': ['lisp'],
+        \ 'php': ['php'],
+        \ 'python': ['python'],
+        \ 'perl': ['perl'],
+        \ 'sh': ['sh'],
+        \ }
+elseif type(g:rst_syntax_code_list) == type([])
+    " backward compatibility with former list format
+    let s:old_spec = g:rst_syntax_code_list
+    let g:rst_syntax_code_list = {}
+    for s:elem in s:old_spec
+        let g:rst_syntax_code_list[s:elem] = [s:elem]
+    endfor
 endif
 
-for code in g:rst_syntax_code_list
+for s:filetype in keys(g:rst_syntax_code_list)
     unlet! b:current_syntax
     " guard against setting 'isk' option which might cause problems (issue #108)
     let prior_isk = &l:iskeyword
-    exe 'syn include @rst'.code.' syntax/'.code.'.vim'
-    exe 'syn region rstDirective'.code.' matchgroup=rstDirective fold'
-                \.' start=#\%(sourcecode\|code\%(-block\)\=\)::\s\+'.code.'\_s*\n\ze\z(\s\+\)#'
+    let s:alias_pattern = ''
+                \.'\%('
+                \.join(g:rst_syntax_code_list[s:filetype], '\|')
+                \.'\)'
+
+    exe 'syn include @rst'.s:filetype.' syntax/'.s:filetype.'.vim'
+    exe 'syn region rstDirective'.s:filetype
+                \.' matchgroup=rstDirective fold'
+                \.' start="\c\%(sourcecode\|code\%(-block\)\=\)::\s\+'.s:alias_pattern.'\_s*\n\ze\z(\s\+\)"'
                 \.' skip=#^$#'
                 \.' end=#^\z1\@!#'
-                \.' contains=@NoSpell,@rst'.code
-    exe 'syn cluster rstDirectives add=rstDirective'.code
+                \.' contains=@NoSpell,@rst'.s:filetype
+    exe 'syn cluster rstDirectives add=rstDirective'.s:filetype
+
     " reset 'isk' setting, if it has been changed
     if &l:iskeyword !=# prior_isk
         let &l:iskeyword = prior_isk
