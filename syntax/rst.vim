@@ -230,6 +230,9 @@ for s:filetype in keys(g:rst_syntax_code_list)
     unlet! prior_isk
 endfor
 
+" Enable top level spell checking
+syntax spell toplevel
+
 " TODO: Use better syncing.
 syn sync minlines=50 linebreaks=2
 
