@@ -29,13 +29,14 @@ if !exists("g:rst_style") || g:rst_style != 0
     setlocal expandtab shiftwidth=3 softtabstop=3 tabstop=8
 endif
 
-setlocal foldmethod=expr
-setlocal foldexpr=RstFold#GetRstFold()
-setlocal foldtext=RstFold#GetRstFoldText()
-
-augroup RstFold
-  autocmd TextChanged,InsertLeave <buffer> unlet! b:RstFoldCache
-augroup END
+if has('patch-7.3.867')  " Introduced the TextChanged event.
+  setlocal foldmethod=expr
+  setlocal foldexpr=RstFold#GetRstFold()
+  setlocal foldtext=RstFold#GetRstFoldText()
+  augroup RstFold
+    autocmd TextChanged,InsertLeave <buffer> unlet! b:RstFoldCache
+  augroup END
+endif
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
