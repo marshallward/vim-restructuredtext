@@ -29,5 +29,12 @@ if !exists("g:rst_style") || g:rst_style != 0
     setlocal expandtab shiftwidth=3 softtabstop=3 tabstop=8
 endif
 
+set foldmethod=expr
+set foldexpr=RstFold#GetRstFold()
+
+augroup RstFold
+  autocmd TextChanged,InsertLeave <buffer> unlet! b:RstFoldCache
+augroup END
+
 let &cpo = s:cpo_save
 unlet s:cpo_save
