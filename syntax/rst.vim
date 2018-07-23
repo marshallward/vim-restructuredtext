@@ -253,8 +253,6 @@ hi def link rstHyperlinkTarget              String
 hi def link rstExDirective                  String
 hi def link rstSubstitutionDefinition       rstDirective
 hi def link rstDelimiter                    Delimiter
-hi def rstEmphasis                          term=italic cterm=italic gui=italic
-hi def rstStrongEmphasis                    term=bold cterm=bold gui=bold
 hi def link rstInterpretedTextOrHyperlinkReference  Identifier
 hi def link rstInlineLiteral                String
 hi def link rstSubstitutionReference        PreProc
@@ -264,6 +262,14 @@ hi def link rstCitationReference            Identifier
 hi def link rstHyperLinkReference           Identifier
 hi def link rstStandaloneHyperlink          Identifier
 hi def link rstCodeBlock                    String
+if exists('g:rst_use_emphasis_colors')
+    " TODO: Less arbitrary color selection
+    hi def rstEmphasis          ctermfg=1 term=italic cterm=italic gui=italic
+    hi def rstStrongEmphasis    ctermfg=13 term=bold cterm=bold gui=bold
+else
+    hi def rstEmphasis          term=italic cterm=italic gui=italic
+    hi def rstStrongEmphasis    term=bold cterm=bold gui=bold
+endif
 
 let b:current_syntax = "rst"
 
