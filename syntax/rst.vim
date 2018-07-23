@@ -264,8 +264,8 @@ hi def link rstStandaloneHyperlink          Identifier
 hi def link rstCodeBlock                    String
 if exists('g:rst_use_emphasis_colors')
     " TODO: Less arbitrary color selection
-    hi def rstEmphasis          ctermfg=1 term=italic cterm=italic gui=italic
-    hi def rstStrongEmphasis    ctermfg=13 term=bold cterm=bold gui=bold
+    hi def rstEmphasis          ctermfg=13 term=italic cterm=italic gui=italic
+    hi def rstStrongEmphasis    ctermfg=1 term=bold cterm=bold gui=bold
 else
     hi def rstEmphasis          term=italic cterm=italic gui=italic
     hi def rstStrongEmphasis    term=bold cterm=bold gui=bold
