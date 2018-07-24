@@ -1,3 +1,7 @@
+" Author: Antony Lee <anntzer.lee@gmail.com>
+" Description: Helper functions for reStructuredText syntax folding
+" Last Modified: 2018-01-07
+
 function s:CacheRstFold()
   let closure = {'header_types': {}, 'max_level': 0, 'levels': {}}
   function closure.Process(match) dict
