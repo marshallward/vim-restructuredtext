@@ -3,6 +3,10 @@
 " Last Modified: 2018-01-07
 
 function s:CacheRstFold()
+  if !g:rst_fold_enabled
+    return
+  endif
+
   let closure = {'header_types': {}, 'max_level': 0, 'levels': {}}
   function closure.Process(match) dict
     let curline = getcurpos()[1]
@@ -28,6 +32,10 @@ function s:CacheRstFold()
 endfunction
 
 function RstFold#GetRstFold()
+  if !g:rst_fold_enabled
+    return
+  endif
+
   if !has_key(b:, 'RstFoldCache')
     call s:CacheRstFold()
   endif
@@ -39,6 +47,10 @@ function RstFold#GetRstFold()
 endfunction
 
 function RstFold#GetRstFoldText()
+  if !g:rst_fold_enabled
+    return
+  endif
+
   if !has_key(b:, 'RstFoldCache')
     call s:CacheRstFold()
   endif

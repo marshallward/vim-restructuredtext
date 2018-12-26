@@ -13,6 +13,11 @@ let b:did_ftplugin = 1
 let s:cpo_save = &cpo
 set cpo&vim
 
+"Disable folding
+if !exists('g:rst_fold_enabled')
+  let g:rst_fold_enabled = 0
+endif
+
 let b:undo_ftplugin = "setl com< cms< et< fo<"
 
 setlocal comments=fb:.. commentstring=..\ %s expandtab
