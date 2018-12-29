@@ -1,6 +1,6 @@
 " Author: Antony Lee <anntzer.lee@gmail.com>
 " Description: Helper functions for reStructuredText syntax folding
-" Last Modified: 2018-01-07
+" Last Modified: 2018-12-29
 
 function s:CacheRstFold()
   if !g:rst_fold_enabled

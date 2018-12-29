@@ -3,7 +3,7 @@
 " Maintainer: Marshall Ward <marshall.ward@gmail.com>
 " Previous Maintainer: Nikolai Weibull <now@bitwi.se>
 " Website: https://github.com/marshallward/vim-restructuredtext
-" Latest Revision: 2018-07-23
+" Latest Revision: 2018-12-29
 
 if exists("b:current_syntax")
   finish
