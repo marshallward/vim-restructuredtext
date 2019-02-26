@@ -21,7 +21,7 @@ syn cluster rstCruft                contains=rstEmphasis,rstStrongEmphasis,
       \ rstInlineInternalTargets,rstFootnoteReference,rstHyperlinkReference
 
 syn region  rstLiteralBlock         matchgroup=rstDelimiter
-      \ start='::\_s*\n\ze\z(\s\+\)' skip='^$' end='^\z1\@!'
+      \ start='\(^\z(\s*\).*\)\@<=::\n\s*\n' skip='^\s*$' end='^\(\z1\s\+\)\@!'
       \ contains=@NoSpell
 
 syn region  rstQuotedLiteralBlock   matchgroup=rstDelimiter
