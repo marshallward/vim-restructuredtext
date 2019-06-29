@@ -97,8 +97,6 @@ function! s:DefineOneInlineMarkup(name, start, middle, end, char_left, char_righ
     let first = a:start[0]
   endif
 
-  echo "a:start ".a:start
-  echo "first ".first
   execute 'syn match rstEscape'.a:name.' +\\\\\|\\'.first.'+'.' contained'
 
   execute 'syn region rst' . a:name .
