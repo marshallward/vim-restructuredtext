@@ -90,7 +90,16 @@ execute 'syn match rstSubstitutionDefinition contained' .
       \ ' /|.*|\_s\+/ nextgroup=@rstDirectives'
 
 function! s:DefineOneInlineMarkup(name, start, middle, end, char_left, char_right)
-  execute 'syn match rstEscape'.a:name.' +\\\\\|\\'.a:start.'+'.' contained'
+  " Only escape the first char of a multichar delimiter (e.g. \* inside **)
+  if a:start[0] == '\'
+    let first = a:start[0:1]
+  else
+    let first = a:start[0]
+  endif
+
+  echo "a:start ".a:start
+  echo "first ".first
+  execute 'syn match rstEscape'.a:name.' +\\\\\|\\'.first.'+'.' contained'
 
   execute 'syn region rst' . a:name .
         \ ' start=+' . a:char_left . '\zs' . a:start .
