@@ -71,11 +71,11 @@ Whitespace before :: changes the substitution but is otherwise valid. ::
 
 ----
 
-Any *inline* literal breaks the parsing! ::
+An *inline* literal should not break the parsing. ::
 
    This is a valid literal block.
 
-This one does not work!!
+This appears to be working now.
 
 ----
 
