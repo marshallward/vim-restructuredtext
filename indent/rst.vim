@@ -18,6 +18,13 @@ endif
 
 let s:itemization_pattern = '^\s*[-*+]\s'
 let s:enumeration_pattern = '^\s*\%(\d\+\|#\)\.\s\+'
+let s:note_pattern = '^\.\. '
+
+function! s:get_paragraph_start()
+    let paragraph_mark_start = getpos("'{")[1]
+    return getline(paragraph_mark_start) =~
+        \ '\S' ? paragraph_mark_start : paragraph_mark_start + 1
+endfunction
 
 function GetRSTIndent()
   let lnum = prevnonblank(v:lnum - 1)
@@ -27,6 +34,13 @@ function GetRSTIndent()
 
   let ind = indent(lnum)
   let line = getline(lnum)
+
+  let psnum = s:get_paragraph_start()
+  if psnum != 0
+      if getline(psnum) =~ s:note_pattern
+          return 3
+      endif
+  endif
 
   if line =~ s:itemization_pattern
     let ind += 2
