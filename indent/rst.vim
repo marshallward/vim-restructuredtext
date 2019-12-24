@@ -38,7 +38,7 @@ function GetRSTIndent()
   let psnum = s:get_paragraph_start()
   if psnum != 0
       if getline(psnum) =~ s:note_pattern
-          return 3
+          let ind = 3
       endif
   endif
 
