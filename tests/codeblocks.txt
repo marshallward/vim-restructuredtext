@@ -56,3 +56,10 @@ Fields with a named language (not currently working)
       return 0;
    }
 
+Code blocks require a blank line after the directive, so this should not
+highlight.  (Note: currently fails)
+
+.. code::
+   int main(void) {
+      return 0;
+   }
