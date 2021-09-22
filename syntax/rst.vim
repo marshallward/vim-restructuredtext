@@ -29,7 +29,7 @@ syn region  rstQuotedLiteralBlock   matchgroup=rstDelimiter
       \ start="::\_s*\n\ze\z([!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]\)"
       \ end='^\z1\@!' contains=@NoSpell
 
-syn region  rstDoctestBlock         oneline display matchgroup=rstDelimiter
+syn region  rstDoctestBlock         matchgroup=rstDelimiter
       \ start='^>>>\s' end='^$'
 
 syn region  rstTable                transparent start='^\n\s*+[-=+]\+' end='^$'
