@@ -63,13 +63,17 @@ execute 'syn region rstComment contained' .
       \ ' skip=+^$+' .
       \ ' end=/^\s\@!/ contains=rstTodo'
 
-execute 'syn region rstFootnote contained matchgroup=rstDirective' .
-      \ ' start=+\[\%(\d\+\|#\%(' . s:ReferenceName . '\)\=\|\*\)\]\_s+' .
+" Note: Order matters for rstCitation and rstFootnote as the regex for
+" citations also matches numeric only patterns, e.g. [1], which are footnotes.
+" Since we define rstFootnote after rstCitation, it takes precedence, see
+" |:syn-define|.
+execute 'syn region rstCitation contained matchgroup=rstDirective' .
+      \ ' start=+\[' . s:ReferenceName . '\]\_s+' .
       \ ' skip=+^$+' .
       \ ' end=+^\s\@!+ contains=@rstCruft,@NoSpell'
 
-execute 'syn region rstCitation contained matchgroup=rstDirective' .
-      \ ' start=+\[' . s:ReferenceName . '\]\_s+' .
+execute 'syn region rstFootnote contained matchgroup=rstDirective' .
+      \ ' start=+\[\%(\d\+\|#\%(' . s:ReferenceName . '\)\=\|\*\)\]\_s+' .
       \ ' skip=+^$+' .
       \ ' end=+^\s\@!+ contains=@rstCruft,@NoSpell'
 
