@@ -12,11 +12,17 @@ endif
 let s:cpo_save = &cpo
 set cpo&vim
 
-syn case ignore
+" reStructuredText is case-insensitive
+syntax case ignore
 
 syn match   rstTransition  /^[=`:.'"~^_*+#-]\{4,}\s*$/
 
-syn cluster rstCruft                contains=rstEmphasis,rstStrongEmphasis,
+"syn cluster rstCruft                contains=rstEmphasis,rstStrongEmphasis,
+"      \ rstInterpretedTextOrHyperlinkReference,rstInlineLiteral,
+"      \ rstSubstitutionReference, rstInlineInternalTargets,rstFootnoteReference,
+"      \ rstHyperlinkReference
+
+syn cluster rstCruft                contains=
       \ rstInterpretedTextOrHyperlinkReference,rstInlineLiteral,
       \ rstSubstitutionReference, rstInlineInternalTargets,rstFootnoteReference,
       \ rstHyperlinkReference
@@ -48,19 +54,61 @@ syn match   rstSimpleTableLines     contained display
 syn match   rstSimpleTableLines     contained display
       \ '^\%(\s*\)\@>\%(\%(-\+\)\@>\%(\s\+\)\@>\)\%(\%(\%(-\+\)\@>\%(\s*\)\@>\)\+\)\@>$'
 
+"syn cluster rstDirectives           contains=rstFootnote,rstCitation,
+"      \ rstHyperlinkTarget, rstExDirective
 syn cluster rstDirectives           contains=rstFootnote,rstCitation,
-      \ rstHyperlinkTarget,rstExDirective
+      \ rstHyperlinkTarget
 
-syn match   rstExplicitMarkup       '^\s*\.\.\_s'
-      \ nextgroup=@rstDirectives,rstSubstitutionDefinition
-      \ contains=rstComment
+"syn match   rstExplicitMarkup       '^\s*\.\.\_s'
+"      \ nextgroup=@rstDirectives,rstSubstitutionDefinition
+"      \ contains=rstComment
+
+" Explicit blocks "
+
+" Denotes the beginning of an explicit block
+syntax match rstExplicitBlockMarker '\.\. '
+    \ nextgroup=rstDirectiveType
+    \ contained
+
+" There are six types of explicit blocks:
+"   - Footnotes
+"   - Citations
+"   - Hyperlink targets
+"   - Directives
+"   - Substitution definitions
+"   - Comments
+
+" Directives
+
+syntax match rstDirectiveType
+    \ '[[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*'
+    \ contained
+
+" Directives are indicated by an explicit markup start (.. ) followed by the
+" directive type, two colons, and whitespace (together called the directive
+" marker).
+syntax match rstDirectiveMarker
+    \ '\.\. [[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*::'
+    \ contains=rstExplicitBlockMarker,rstDirectiveType
+    \ contained
+
+" TODO: Match directive block (arguments, options, content)
+
+syntax region rstDirectiveNew
+    \ start='^\z\(\s*\)\.\. [[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*::'
+    \ skip='^$'
+    \ end='^\(\z1 \)\@!'
+    \ contains=rstDirectiveMarker
 
 " "Simple reference names are single words consisting of alphanumerics plus
 " isolated (no two adjacent) internal hyphens, underscores, periods, colons
 " and plus signs."
 let s:ReferenceName = '[[:alnum:]]\%([-_.:+]\?[[:alnum:]]\+\)*'
 
-syn keyword     rstTodo             contained FIXME TODO XXX NOTE
+"syn match rstDirectiveType '[[:alnum:]]\%([-_.:+]\?[[:alnum:]]\+\)*'
+"    \ contained
+
+syn keyword rstTodo contained FIXME TODO XXX NOTE
 
 syn region rstComment
       \ start='\v^\z(\s*)\.\.(\_s+[\[|_]|\_s+.*::)@!' skip=+^$+ end=/^\(\z1   \)\@!/
@@ -89,13 +137,22 @@ syn region rstHyperlinkTarget contained matchgroup=rstDirective
 syn region rstHyperlinkTarget matchgroup=rstDirective
       \ start=+^__\_s+ skip=+^$+ end=+^\s\@!+
 
-execute 'syn region rstExDirective contained matchgroup=rstDirective' .
-      \ ' start=+' . s:ReferenceName . '::\_s+' .
-      \ ' skip=+^$+' .
-      \ ' end=+^\s\@!+ contains=@Spell,@rstCruft,rstLiteralBlock,rstExplicitMarkup'
+"execute 'syn region rstExDirective contained matchgroup=rstDirective' .
+"      \ ' start=+' . s:ReferenceName . '::\_s+' .
+"      \ ' skip=+^$+' .
+"      \ ' end=+^\s\@!+ contains=@Spell,@rstCruft,rstLiteralBlock,rstExplicitMarkup'
+
+"syn region rstExDirective
+"      \ start=+^\z(\s*\)\.\. [[:alnum:]]\%([-_.:+]\?[[:alnum:]]\+\)*::\_s+
+"      \ skip=+^$+
+"      \ end=+^\(\z1 \)\@!+
+"      \ contains=@Spell,@rstCruft,rstExplcitMarkup,rstDirectiveName
 
 execute 'syn match rstSubstitutionDefinition contained' .
       \ ' /|.*|\_s\+/ nextgroup=@rstDirectives'
+
+
+"" Inline Markup ""
 
 function! s:DefineOneInlineMarkup(name, start, middle, end, char_left, char_right)
   " Only escape the first char of a multichar delimiter (e.g. \* inside **)
@@ -245,10 +302,17 @@ for s:filetype in keys(g:rst_syntax_code_list)
                 \.join(g:rst_syntax_code_list[s:filetype], '\|')
                 \.'\)'
 
+    exe 'syn sync clear'
     exe 'syn include @rst'.s:filetype.' syntax/'.s:filetype.'.vim'
+    "exe 'syn region rstDirective'.s:filetype
+    "            \.' matchgroup=rstDirective fold'
+    "            \.' start="\c\%(sourcecode\|code\%(-block\)\=\)::\s\+'.s:alias_pattern.'\_s*\n\ze\z(\s\+\)"'
+    "            \.' skip=#^$#'
+    "            \.' end=#^\z1\@!#'
+    "            \.' contains=@NoSpell,@rst'.s:filetype
     exe 'syn region rstDirective'.s:filetype
                 \.' matchgroup=rstDirective fold'
-                \.' start="\c\%(sourcecode\|code\%(-block\)\=\)::\s\+'.s:alias_pattern.'\_s*\n\ze\z(\s\+\)"'
+                \.' start=#^\z(\s*\)\.\. code::\s\+'.s:alias_pattern.'\_s*\n\ze\z(\s\+\)#'
                 \.' skip=#^$#'
                 \.' end=#^\z1\@!#'
                 \.' contains=@NoSpell,@rst'.s:filetype
@@ -260,6 +324,7 @@ for s:filetype in keys(g:rst_syntax_code_list)
     endif
     unlet! prior_isk
 endfor
+
 
 " Enable top level spell checking
 syntax spell toplevel
@@ -273,6 +338,7 @@ hi def link rstSections                     Title
 hi def link rstTransition                   rstSections
 hi def link rstLiteralBlock                 String
 hi def link rstQuotedLiteralBlock           String
+hi def link rstExDirective                  String
 hi def link rstDoctestBlock                 PreProc
 hi def link rstDoctestBlockPrompt           rstDelimiter
 hi def link rstTableLines                   rstDelimiter
@@ -302,6 +368,12 @@ else
     hi def rstEmphasis          term=italic cterm=italic gui=italic
     hi def rstStrongEmphasis    term=bold cterm=bold gui=bold
 endif
+
+" Syntax rewrite...
+highlight default link rstExplicitBlockMarker Operator
+highlight default link rstDirectiveType Identifier
+highlight default link rstDirectiveMarker Statement
+highlight default link rstDirectiveNew Constant
 
 let b:current_syntax = "rst"
 
