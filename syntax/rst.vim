@@ -247,12 +247,23 @@ execute 'syn match rstHyperlinkReference' .
 syn match   rstStandaloneHyperlink  contains=@NoSpell
       \ "\<\%(\%(\%(https\=\|file\|ftp\|gopher\)://\|\%(mailto\|news\):\)[^[:space:]'\"<>]\+\|www[[:alnum:]_-]*\.[[:alnum:]_-]\+\.[^[:space:]'\"<>]\+\)[[:alnum:]/]"
 
+" `code` is the standard reST directive for source code.
+" `code-block` is a nearly identical directive in Sphinx.
+" `sourcecode` used to be supported, but I could not determine its origin so
+" it was removed.
+
+"syn region rstCodeBlock contained matchgroup=rstDirective
+"      \ start=+\%(code\%(-block\)\=\)::\s*\(\S*\)\?\s*\n\%(\s*:.*:\s*.*\s*\n\)*\n\ze\z(\s\+\)+
+"      \ skip=+^$+
+"      \ end=+^\z1\@!+
+"      \ contains=@NoSpell
+"syn cluster rstDirectives add=rstCodeBlock
+
 syn region rstCodeBlock contained matchgroup=rstDirective
-      \ start=+\%(sourcecode\|code\%(-block\)\=\)::\s*\(\S*\)\?\s*\n\%(\s*:.*:\s*.*\s*\n\)*\n\ze\z(\s\+\)+
-      \ skip=+^$+
-      \ end=+^\z1\@!+
-      \ contains=@NoSpell
-syn cluster rstDirectives add=rstCodeBlock
+      \ start='\%(code\%(-block\)\=\)::'
+      \ skip='^$'
+      \ end='^\z1\@!'
+      \ contains=@NoSpell,rstDirectiveMarker
 
 if !exists('g:rst_syntax_code_list')
     " A mapping from a Vim filetype to a list of alias patterns (pattern
@@ -302,7 +313,7 @@ for s:filetype in keys(g:rst_syntax_code_list)
                 \.join(g:rst_syntax_code_list[s:filetype], '\|')
                 \.'\)'
 
-    exe 'syn sync clear'
+    syntax sync clear
     exe 'syn include @rst'.s:filetype.' syntax/'.s:filetype.'.vim'
     "exe 'syn region rstDirective'.s:filetype
     "            \.' matchgroup=rstDirective fold'
@@ -312,9 +323,9 @@ for s:filetype in keys(g:rst_syntax_code_list)
     "            \.' contains=@NoSpell,@rst'.s:filetype
     exe 'syn region rstDirective'.s:filetype
                 \.' matchgroup=rstDirective fold'
-                \.' start=#^\z(\s*\)\.\. code::\s\+'.s:alias_pattern.'\_s*\n\ze\z(\s\+\)#'
+                \.' start=#^\z(\s*\)\.\. \%(sourcecode\|code\%(-block\)\=\)::\s\+'.s:alias_pattern.'\_s*\n\ze\z(\s\+\)#'
                 \.' skip=#^$#'
-                \.' end=#^\z1\@!#'
+                \.' end=#^\(\z1 \)\@!#'
                 \.' contains=@NoSpell,@rst'.s:filetype
     exe 'syn cluster rstDirectives add=rstDirective'.s:filetype
 
