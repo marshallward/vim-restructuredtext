@@ -2,6 +2,7 @@
 " Language: reStructuredText documentation format
 " Maintainer: Marshall Ward <marshall.ward@gmail.com>
 " Previous Maintainer: Nikolai Weibull <now@bitwi.se>
+" Reference: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html
 " Website: https://github.com/marshallward/vim-restructuredtext
 " Latest Revision: 2020-03-31
 
@@ -78,7 +79,19 @@ syntax match rstExplicitBlockMarker '\.\. '
 "   - Substitution definitions
 "   - Comments
 
-" Directives
+""" Footnotes
+
+" A footnote label can be:
+"  - a whole decimal number consisting of one or more digits,
+"  - a single # (denoting auto-numbered footnotes),
+"  - a # followed by a simple reference name (an autonumber label), or
+"  - a single * (denoting auto-symbol footnotes).
+
+syntax match rstFootnoteLabel
+    \ '\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*'
+
+
+""" Directives
 
 syntax match rstDirectiveType
     \ '[[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*'
