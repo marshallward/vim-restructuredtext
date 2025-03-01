@@ -2,7 +2,6 @@
 " Language: reStructuredText documentation format
 " Maintainer: Marshall Ward <marshall.ward@gmail.com>
 " Previous Maintainer: Nikolai Weibull <now@bitwi.se>
-" Reference: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html
 " Website: https://github.com/marshallward/vim-restructuredtext
 " Latest Revision: 2020-03-31
 
@@ -68,7 +67,7 @@ syn cluster rstDirectives           contains=rstFootnote,rstCitation,
 
 " Denotes the beginning of an explicit block
 syntax match rstExplicitBlockMarker '\.\. '
-    \ nextgroup=rstDirectiveType
+    \ nextgroup=rstDirectiveType, rstFootnoteLabel
     \ contained
 
 " There are six types of explicit blocks:
@@ -88,18 +87,32 @@ syntax match rstExplicitBlockMarker '\.\. '
 "  - a single * (denoting auto-symbol footnotes).
 
 syntax match rstFootnoteLabel
-    \ '\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*'
+    \ '\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)'
+
+" Not in the standard, but it prevents footnote label highlights in the body.
+syntax match rstFootnoteMarker
+    \ '\.\. \[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]'
+    \ contains=rstExplicitBlockMarker, rstFootnoteLabel
+
+syntax region rstFootnoteNew
+    \ start='^\z\(\s*\)\.\. \[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]'
+    \ skip='^$'
+    \ end='^\(\z1 \)\@!'
+    \ contains=rstFootnoteMarker
 
 
 """ Directives
 
+" Directive types are case-insensitive single words (alphanumerics plus
+" isolated internal hyphens, underscores, plus signs, colons, and periods; no
+" whitespace).
 syntax match rstDirectiveType
     \ '[[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*'
     \ contained
 
 " Directives are indicated by an explicit markup start (.. ) followed by the
-" directive type, two colons, and whitespace (together called the directive
-" marker).
+" directive type, two colons, and whitespace (together called the *directive
+" marker*).
 syntax match rstDirectiveMarker
     \ '\.\. [[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*::'
     \ contains=rstExplicitBlockMarker,rstDirectiveType
@@ -136,10 +149,10 @@ execute 'syn region rstCitation contained matchgroup=rstDirective' .
       \ ' skip=+^$+' .
       \ ' end=+^\s\@!+ contains=@Spell,@rstCruft'
 
-execute 'syn region rstFootnote contained matchgroup=rstDirective' .
-      \ ' start=+\[\%(\d\+\|#\%(' . s:ReferenceName . '\)\=\|\*\)\]\_s+' .
-      \ ' skip=+^$+' .
-      \ ' end=+^\s\@!+ contains=@Spell,@rstCruft'
+"execute 'syn region rstFootnote contained matchgroup=rstDirective' .
+"      \ ' start=+\[\%(\d\+\|#\%(' . s:ReferenceName . '\)\=\|\*\)\]\_s+' .
+"      \ ' skip=+^$+' .
+"      \ ' end=+^\s\@!+ contains=@Spell,@rstCruft'
 
 syn region rstHyperlinkTarget contained matchgroup=rstDirective
       \ start='_\%(_\|[^:\\]*\%(\\.[^:\\]*\)*\):\_s' skip=+^$+ end=+^\s\@!+
@@ -395,6 +408,9 @@ endif
 
 " Syntax rewrite...
 highlight default link rstExplicitBlockMarker Operator
+highlight default link rstFootnoteLabel Identifier
+highlight default link rstFootnoteMarker Constant
+highlight default link rstFootnoteNew Constant
 highlight default link rstDirectiveType Identifier
 highlight default link rstDirectiveMarker Statement
 highlight default link rstDirectiveNew Constant
