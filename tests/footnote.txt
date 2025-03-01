@@ -1,0 +1,28 @@
+Footnote validation testing
+---------------------------
+
+This is a basic example from the language spec.[1]_
+
+.. [1] Body elements go here.
+
+
+Footnotes[2]_ can be multiline[2]_.
+
+.. [2] This is a single-line footnote.
+   This is part of the same footnote.
+
+.. [3] This is also a single-line footnote.
+ Only a single space is needed to indicate a line continuation.
+
+
+Auto-numbered footnotes
+-----------------------
+
+[#]_ is a reference to footnote 1,
+and [#]_ is a reference to footnote 2.
+
+.. [#] This is footnote 1.
+.. [#] This is footnote 2.
+.. [#] This is footnote 3.
+
+[#]_ is a reference to footnote 3.
