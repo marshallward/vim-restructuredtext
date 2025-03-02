@@ -1,28 +1,99 @@
 Footnote validation testing
 ---------------------------
 
-This is a basic example from the language spec.[1]_
+This is a basic example from the language spec. [1]_
 
 .. [1] Body elements go here.
 
+----
 
-Footnotes[2]_ can be multiline[2]_.
+Multiple spaces may follow the explicit markup start "``..``". [2]_
 
-.. [2] This is a single-line footnote.
-   This is part of the same footnote.
+..   [2] Footnote with extra space.
 
-.. [3] This is also a single-line footnote.
- Only a single space is needed to indicate a line continuation.
+Tab stops can also follow "``..``". [3]_
 
+..	[3] This footnote follows a tab stop (HT, 0x09)
 
-Auto-numbered footnotes
------------------------
+But at least one space must be used.
 
-[#]_ is a reference to footnote 1,
-and [#]_ is a reference to footnote 2.
+.. NOTE: The following is currently incorrectly highlighted as a comment!
 
-.. [#] This is footnote 1.
-.. [#] This is footnote 2.
-.. [#] This is footnote 3.
+..[0]This is not a footnote.
 
-[#]_ is a reference to footnote 3.
+There must also be at least one space after the footnote label delimiters. [4]_
+
+.. [0]This is not a footnote either!
+
+Empty footnotes are not very useful but are permitted. [4]_
+
+.. [4]
+
+----
+
+Auto-numbered footnotes use the ``#`` symbol.  The example below is modified
+from the language standard.
+
+[#]_ is a reference to footnote 5, and [#]_ is a reference to footnote 6.
+
+.. [#] This is footnote 5.
+.. [#] This is footnote 6.
+.. [#] This is footnote 7.
+
+[#]_ is a reference to footnote 7.
+
+----
+
+Footnotes [#]_ can be multiline in the source [#]_ or in the output. [#]_
+
+.. [#] This is a multiline footnote.
+   The output will produce a single line whitespace test
+
+.. [#] This is also a multiline footnote.
+ Only a single space is needed to denote content within the footnote.
+
+.. [#] This note will have more than one line.
+
+   New lines are denoted by a blank line within the footnote.
+
+----
+
+*Autonumber labels* specify a label explicitly while at the same time
+requesting automatic numbering.  The example below is taken from the standard.
+
+If [#note]_ is the first footnote reference, it will show up as "[1]".  We can
+refer to it again as [#note]_ and again see "[1]".  We can also refer to it as
+note_ (an ordinary internal hyperlink reference).
+
+.. [#note] This is the footnote labeled "note".
+
+----
+
+Quoting the spec:
+
+  "Inline markup recognition rules may require whitespace in front of the
+  footnote reference."
+
+This is not a footnote reference and should not be highlighted.[#]_
+
+[#]_ This is a footnote reference; they can appear at the start of a line.
+
+[#]_But this is not a footnote reference; they must be followed by whitespace
+or an end-of-line.
+
+.. [#] Just another footnote...
+
+----
+
+Text blocks may have their own indentation.
+
+   Footnotes must respect the local indentation. [#]_
+
+   .. [#] This note is not terminated until whitespace matches the indentation
+
+      This is part of the note.
+
+   This is not part of the note.
+
+.. [#] A blank line must follow the footnote.
+This is an invalid footnote.

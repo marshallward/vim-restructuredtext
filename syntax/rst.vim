@@ -2,6 +2,7 @@
 " Language: reStructuredText documentation format
 " Maintainer: Marshall Ward <marshall.ward@gmail.com>
 " Previous Maintainer: Nikolai Weibull <now@bitwi.se>
+" Reference: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html
 " Website: https://github.com/marshallward/vim-restructuredtext
 " Latest Revision: 2020-03-31
 
@@ -63,11 +64,22 @@ syn cluster rstDirectives           contains=rstFootnote,rstCitation,
 "      \ nextgroup=@rstDirectives,rstSubstitutionDefinition
 "      \ contains=rstComment
 
-" Explicit blocks "
+"syntax region rstBlock
+"    \ start='^\z(\s*\)'
+"    \ skip='^$'
+"    \ end='^\%(\z1 \)\@!'
+"    \ contains=@Spell,rstFootnoteMarker
+
+" Explicit Markup Block "
+
+"syntax region rstExplicitMarkupBlock
+"    \ start='^\z(\s*\)\.\.\s*'
+"    \ skip='^$'
+"    \ end='^\%(\z1 \)\@!'
 
 " Denotes the beginning of an explicit block
-syntax match rstExplicitBlockMarker '\.\. '
-    \ nextgroup=rstDirectiveType, rstFootnoteLabel
+syntax match rstExplicitBlockMarker '\.\.\s*'
+    \ nextgroup=rstDirectiveType,rstFootnoteLabel
     \ contained
 
 " There are six types of explicit blocks:
@@ -88,17 +100,24 @@ syntax match rstExplicitBlockMarker '\.\. '
 
 syntax match rstFootnoteLabel
     \ '\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)'
+    \ contained
 
-" Not in the standard, but it prevents footnote label highlights in the body.
+" Not a standard element, but prevents footnote label highlights in the body.
 syntax match rstFootnoteMarker
-    \ '\.\. \[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]'
-    \ contains=rstExplicitBlockMarker, rstFootnoteLabel
+    \ '\.\.\s*\[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]'
+    \ contains=rstExplicitBlockMarker,rstFootnoteLabel
+    \ contained
 
 syntax region rstFootnoteNew
-    \ start='^\z\(\s*\)\.\. \[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]'
+    \ start='^\z\(\s*\)\.\.\s\+\[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]\_s'
     \ skip='^$'
-    \ end='^\(\z1 \)\@!'
-    \ contains=rstFootnoteMarker
+    \ end='^\%(\z1 \)\@!'
+    \ contains=@Spell,rstFootnoteMarker
+
+" Placing this here for now, but references may be moved to another section.
+syntax match rstFootnoteReference
+    \ '\%(\s\|^\)\[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]_\_s'
+    \ contains=rstFootnoteLabel
 
 
 """ Directives
@@ -126,13 +145,10 @@ syntax region rstDirectiveNew
     \ end='^\(\z1 \)\@!'
     \ contains=rstDirectiveMarker
 
-" "Simple reference names are single words consisting of alphanumerics plus
+" Simple reference names are single words consisting of alphanumerics plus
 " isolated (no two adjacent) internal hyphens, underscores, periods, colons
-" and plus signs."
+" and plus signs.
 let s:ReferenceName = '[[:alnum:]]\%([-_.:+]\?[[:alnum:]]\+\)*'
-
-"syn match rstDirectiveType '[[:alnum:]]\%([-_.:+]\?[[:alnum:]]\+\)*'
-"    \ contained
 
 syn keyword rstTodo contained FIXME TODO XXX NOTE
 
@@ -261,8 +277,8 @@ syn match   rstSections "\v^%(([=`:.'"~^_*+#-])\1{2,}\n)?.{3,}\n([=`:.'"~^_*+#-]
     \ contains=@Spell
 
 " TODO: Can’t remember why these two can’t be defined like the ones above.
-execute 'syn match rstFootnoteReference contains=@NoSpell' .
-      \ ' +\%(\s\|^\)\[\%(\d\+\|#\%(' . s:ReferenceName . '\)\=\|\*\)\]_+'
+"execute 'syn match rstFootnoteReference contains=@NoSpell' .
+"      \ ' +\%(\s\|^\)\[\%(\d\+\|#\%(' . s:ReferenceName . '\)\=\|\*\)\]_+'
 
 execute 'syn match rstCitationReference contains=@NoSpell' .
       \ ' +\%(\s\|^\)\[' . s:ReferenceName . '\]_\ze\%($\|\s\|[''")\]}>/:.,;!?\\-]\)+'
@@ -392,7 +408,7 @@ hi def link rstInterpretedTextOrHyperlinkReference  Identifier
 hi def link rstInlineLiteral                String
 hi def link rstSubstitutionReference        PreProc
 hi def link rstInlineInternalTargets        Identifier
-hi def link rstFootnoteReference            Identifier
+"hi def link rstFootnoteReference            Identifier
 hi def link rstCitationReference            Identifier
 hi def link rstHyperLinkReference           Identifier
 hi def link rstStandaloneHyperlink          Identifier
@@ -409,11 +425,13 @@ endif
 " Syntax rewrite...
 highlight default link rstExplicitBlockMarker Operator
 highlight default link rstFootnoteLabel Identifier
-highlight default link rstFootnoteMarker Constant
+highlight default link rstFootnoteMarker Operator
 highlight default link rstFootnoteNew Constant
+highlight default link rstFootnoteReference Operator
 highlight default link rstDirectiveType Identifier
 highlight default link rstDirectiveMarker Statement
 highlight default link rstDirectiveNew Constant
+highlight default link rstFootnoteError Error
 
 let b:current_syntax = "rst"
 
