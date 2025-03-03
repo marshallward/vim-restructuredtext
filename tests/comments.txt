@@ -1,3 +1,29 @@
+Test
+
+..
+
+Test
+
+----
+
+.. This is a comment
+
+..
+   _so: is this!
+
+..
+   [and] this!
+
+..
+   this:: too!
+
+..
+   |even| this:: !
+
+.. [this] however, is a citation.
+
+----
+
 .. this is a comment
 
 .. a-directive::

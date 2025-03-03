@@ -64,6 +64,8 @@ syn cluster rstDirectives           contains=rstFootnote,rstCitation,
 "      \ nextgroup=@rstDirectives,rstSubstitutionDefinition
 "      \ contains=rstComment
 
+" Explicit Markup Block "
+
 "syntax region rstBlock
 "    \ start='^\z(\s*\)'
 "    \ skip='^$'
@@ -77,7 +79,7 @@ syn cluster rstDirectives           contains=rstFootnote,rstCitation,
 "    \ skip='^$'
 "    \ end='^\%(\z1 \)\@!'
 
-" Denotes the beginning of an explicit block
+"" Denotes the beginning of an explicit block
 syntax match rstExplicitBlockMarker '\.\.\s*'
     \ nextgroup=rstDirectiveType,rstFootnoteLabel
     \ contained
@@ -89,6 +91,21 @@ syntax match rstExplicitBlockMarker '\.\.\s*'
 "   - Directives
 "   - Substitution definitions
 "   - Comments
+
+
+""" Comments
+
+" Explicit markup blocks that are not recognized as citations, directives,
+" footnotes, hyperlink targets, or substitution definitions will be processed
+" as a comment element.
+
+" NOTE: Since comments are the exception, we define them first.
+syn region rstComment
+    \ start='^\z\(\s*\)\.\.\(\s\|$\)'
+    \ skip='^$'
+    \ end='^\(\z1 \)\@!'
+    \ contains=@rstCruft,rstTodo
+
 
 """ Footnotes
 
@@ -104,7 +121,7 @@ syntax match rstFootnoteLabel
 
 " Not a standard element, but prevents footnote label highlights in the body.
 syntax match rstFootnoteMarker
-    \ '\.\.\s*\[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]'
+    \ '\.\.\s*\[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]\_s'
     \ contains=rstExplicitBlockMarker,rstFootnoteLabel
     \ contained
 
@@ -118,6 +135,16 @@ syntax region rstFootnoteNew
 syntax match rstFootnoteReference
     \ '\%(\s\|^\)\[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]_\_s'
     \ contains=rstFootnoteLabel
+
+
+""" Citations
+
+" TODO
+
+
+""" Hyperlink targets
+
+" TODO
 
 
 """ Directives
@@ -137,13 +164,27 @@ syntax match rstDirectiveMarker
     \ contains=rstExplicitBlockMarker,rstDirectiveType
     \ contained
 
-" TODO: Match directive block (arguments, options, content)
-
 syntax region rstDirectiveNew
     \ start='^\z\(\s*\)\.\. [[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*::'
     \ skip='^$'
     \ end='^\(\z1 \)\@!'
     \ contains=rstDirectiveMarker
+
+" This could be a generic directive block region?
+
+"syntax region rstExplicitMarkupBlock
+"    \ start='^\z(\s*\)\.\.\s\+'
+"    \ skip='^$'
+"    \ end='^\%(\z1 \)\@!'
+"    \ contains=rstFootnoteMarker,rstDirectiveMarker
+
+" TODO: Match directive block (arguments, options, content)
+
+
+""" Substitution definitions
+
+" TODO
+
 
 " Simple reference names are single words consisting of alphanumerics plus
 " isolated (no two adjacent) internal hyphens, underscores, periods, colons
@@ -152,9 +193,17 @@ let s:ReferenceName = '[[:alnum:]]\%([-_.:+]\?[[:alnum:]]\+\)*'
 
 syn keyword rstTodo contained FIXME TODO XXX NOTE
 
-syn region rstComment
-      \ start='\v^\z(\s*)\.\.(\_s+[\[|_]|\_s+.*::)@!' skip=+^$+ end=/^\(\z1   \)\@!/
-      \ contains=@Spell,rstTodo
+""" Comments (old)
+
+"syn region rstComment
+"    \ start='^\z\(\s*\)\.\.\_s\+\([\[|_]\|.*::\)\@!'
+"    \ skip='^$'
+"    \ end='^\(\z1 \)\@!'
+"    \ contains=@Spell,rstTodo
+
+"syn region rstComment
+"      \ start='\v^\z(\s*)\.\.(\_s+[\[|_]|\_s+.*::)@!' skip=+^$+ end=/^\(\z1   \)\@!/
+"      \ contains=@Spell,rstTodo
 
 " Note: Order matters for rstCitation and rstFootnote as the regex for
 " citations also matches numeric only patterns, e.g. [1], which are footnotes.
@@ -432,6 +481,7 @@ highlight default link rstDirectiveType Identifier
 highlight default link rstDirectiveMarker Statement
 highlight default link rstDirectiveNew Constant
 highlight default link rstFootnoteError Error
+highlight default link rstExplicitMarkupBlock Constant
 
 let b:current_syntax = "rst"
 
