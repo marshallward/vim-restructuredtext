@@ -79,9 +79,17 @@ syn cluster rstDirectives           contains=rstFootnote,rstCitation,
 "    \ skip='^$'
 "    \ end='^\%(\z1 \)\@!'
 
-"" Denotes the beginning of an explicit block
+" Explicit markup blocks all begin with an explicit block marker, two periods
+" and a space
 syntax match rstExplicitBlockMarker '\.\.\s*'
     \ nextgroup=rstDirectiveType,rstFootnoteLabel
+    \ contained
+
+" Simple reference names are single words consisting of alphanumerics plus
+" isolated (no two adjacent) internal hyphens, underscores, periods, colons
+" and plus signs; no whitespace or other characters are allowed. 
+syntax match rstReferenceName
+    \ '[[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*'
     \ contained
 
 " There are six types of explicit blocks:
@@ -107,6 +115,7 @@ syn region rstComment
     \ contains=@rstCruft,rstTodo
 
 
+
 """ Footnotes
 
 " A footnote label can be:
@@ -117,11 +126,12 @@ syn region rstComment
 
 syntax match rstFootnoteLabel
     \ '\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)'
+    \ contains=rstReferenceName
     \ contained
 
 " Not a standard element, but prevents footnote label highlights in the body.
 syntax match rstFootnoteMarker
-    \ '\.\.\s*\[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]\_s'
+    \ '\.\.\s\+\[\%(\d\+\|#\%([[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*\)\=\|\*\)\]\_s'
     \ contains=rstExplicitBlockMarker,rstFootnoteLabel
     \ contained
 
@@ -139,7 +149,16 @@ syntax match rstFootnoteReference
 
 """ Citations
 
-" TODO
+syntax match rstCitationMarker
+    \ '\.\.\s\+\[[[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)\]\_s'
+    \ contains=rstExplicitBlockMarker,rstReferenceName
+    \ contained
+
+syntax region rstCitationNew
+    \ start='^\z\(\s*\)\.\.\s\+\[[[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)\]\_s'
+    \ skip='^$'
+    \ end='^\%(\z1 \)\@!'
+    \ contains=rstCitationMarker
 
 
 """ Hyperlink targets
@@ -149,23 +168,20 @@ syntax match rstFootnoteReference
 
 """ Directives
 
-" Directive types are case-insensitive single words (alphanumerics plus
-" isolated internal hyphens, underscores, plus signs, colons, and periods; no
-" whitespace).
-syntax match rstDirectiveType
-    \ '[[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*'
-    \ contained
+"syntax match rstDirectiveType
+"    \ '[[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*'
+"    \ contained
 
 " Directives are indicated by an explicit markup start (.. ) followed by the
 " directive type, two colons, and whitespace (together called the *directive
 " marker*).
 syntax match rstDirectiveMarker
     \ '\.\. [[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*::'
-    \ contains=rstExplicitBlockMarker,rstDirectiveType
+    \ contains=rstExplicitBlockMarker,rstReferenceName
     \ contained
 
 syntax region rstDirectiveNew
-    \ start='^\z\(\s*\)\.\. [[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*::'
+    \ start='^\z\(\s*\)\.\.\s\+[[:alnum:]]\%([-_+:.]\?[[:alnum:]]\+\)*::'
     \ skip='^$'
     \ end='^\(\z1 \)\@!'
     \ contains=rstDirectiveMarker
@@ -473,15 +489,20 @@ endif
 
 " Syntax rewrite...
 highlight default link rstExplicitBlockMarker Operator
+highlight default link rstReferenceName Identifier
+
 highlight default link rstFootnoteLabel Identifier
 highlight default link rstFootnoteMarker Operator
 highlight default link rstFootnoteNew Constant
 highlight default link rstFootnoteReference Operator
-highlight default link rstDirectiveType Identifier
+
+highlight default link rstCitationMarker Operator
+highlight default link rstCitationNew Constant
+
 highlight default link rstDirectiveMarker Statement
 highlight default link rstDirectiveNew Constant
 highlight default link rstFootnoteError Error
-highlight default link rstExplicitMarkupBlock Constant
+"highlight default link rstExplicitMarkupBlock Constant
 
 let b:current_syntax = "rst"
 

@@ -17,13 +17,9 @@ Tab stops can also follow "``..``". [3]_
 
 But at least one space must be used.
 
-.. NOTE: The following is currently incorrectly highlighted as a comment.
-
 ..[0]This is not a footnote.
 
 There must also be at least one space after the footnote label delimiters. [4]_
-
-.. NOTE: The following is a comment but is not yet highlighted correctly.
 
 .. [0]This is not a footnote either!
 
