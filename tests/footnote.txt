@@ -17,11 +17,13 @@ Tab stops can also follow "``..``". [3]_
 
 But at least one space must be used.
 
-.. NOTE: The following is currently incorrectly highlighted as a comment!
+.. NOTE: The following is currently incorrectly highlighted as a comment.
 
 ..[0]This is not a footnote.
 
 There must also be at least one space after the footnote label delimiters. [4]_
+
+.. NOTE: The following is a comment but is not yet highlighted correctly.
 
 .. [0]This is not a footnote either!
 
@@ -69,6 +71,13 @@ note_ (an ordinary internal hyperlink reference).
 
 ----
 
+These are autosymbol [*]_ footnotes. [*]_
+
+.. [*] This is an autosymbol footnote.
+.. [*] This is another footnote.
+
+----
+
 Quoting the spec:
 
   "Inline markup recognition rules may require whitespace in front of the
@@ -96,4 +105,4 @@ Text blocks may have their own indentation.
    This is not part of the note.
 
 .. [#] A blank line must follow the footnote.
-This is an invalid footnote.
+This is an invalid footnote.  This line should be highlighted as an error!
