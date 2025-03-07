@@ -3,7 +3,7 @@
 " Maintainer: Marshall Ward <marshall.ward@gmail.com>
 " Previous Maintainer: Nikolai Weibull <now@bitwi.se>
 " Website: https://github.com/marshallward/vim-restructuredtext
-" Latest Revision: 2020-03-31
+" Latest Revision: 2025-03-06
 
 if exists("b:current_syntax")
   finish
@@ -264,8 +264,7 @@ endfor
 " Enable top level spell checking
 syntax spell toplevel
 
-" TODO: Use better syncing.
-syn sync minlines=50 linebreaks=2
+exe "syn sync minlines=" . get(g:, 'rst_minlines', 50) . " linebreaks=2"
 
 hi def link rstTodo                         Todo
 hi def link rstComment                      Comment
