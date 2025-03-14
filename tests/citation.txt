@@ -1,0 +1,58 @@
+Citation validation testing
+---------------------------
+
+Citations are identical to footnotes except that they use only non-numeric
+labels such as ``[note]`` or ``[GVR2001]``. Citation labels are simple
+reference names (case-insensitive single words consisting of alphanumerics plus
+internal hyphens, underscores, and periods; no whitespace). Citations may be
+rendered separately and differently from footnotes. For example:
+
+Here is a citation reference: [CIT2002]_.
+
+.. [CIT2002] This is the citation.  It's just like a footnote,
+   except the label is textual.
+
+----
+
+Multiple spaces may follow the ``..`` token. [ExtraSpace]_
+
+..   [ExtraSpace] This citation has extra whitespace.
+
+Tab stops are valid whitespace. [TabStop]_
+
+..	[TabStop] This citation has a tab stop (HT, 0x09).
+
+At least one space must be used.
+
+..[NotACitation] This is not a citation and should be rendered.
+
+Whitespace must follow the label.
+
+.. [AlsoNotACitation]This is just a comment.
+
+Empty citations are valid. [EmptyCitation]_
+
+.. [EmptyCitation]
+
+----
+
+Citations in text blocks
+
+   This is a text block with a citation. [IndentedCitation]_
+
+   .. [IndentedCitation] This should render as a citation
+
+      This is also part of the citation.
+
+   This is not part of the citation.  It is part of the indented block.
+
+This is part of the original block.
+
+----
+
+Citation blocks must be followed by a blank line.
+
+.. Would an end of file be valid?
+
+.. [ErrorCitation] Not a valid citation!
+This line invalidates the citation.  (But not currently rendered!)
