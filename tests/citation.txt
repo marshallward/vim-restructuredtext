@@ -50,9 +50,59 @@ This is part of the original block.
 
 ----
 
+Consecutive lines are in the same paragraph.
+
+.. [SingleSpace] This is the first line.
+ This is in the same paragraph, and has a single space.
+
+Multiple paragraphs are separated by blank lines.
+
+.. [TwoParagraph] This is the first paragraph
+
+ This is the second paragraph.
+
+Text blocks also only require a single space indentation.
+
+   This is a text block.
+
+   .. [SingleBlock] This is the first line.
+    This is the second line but still part of the block.
+
+   This sentence is also in the text block, but outside of the citation.
+
+----
+
+Invalid constructs
+------------------
+
 Citation blocks must be followed by a blank line.
 
-.. Would an end of file be valid?
+.. Would an end-of-file be valid?
 
 .. [ErrorCitation] Not a valid citation!
 This line invalidates the citation.  (But not currently rendered!)
+
+----
+
+Indentation cannot change within a block.  For example.
+
+.. [DifferentSpacing] This is a line.
+   This is valid and sets the indentation.
+  This is invalid!
+ So is this!
+
+----
+
+This is not an error *per se*, but it is misleading.
+
+.. [DifferentParagrams] This is a line.
+   This looks like it's part of the line above, but the next paragraph changes
+   its meaning.
+
+ This line sets the overall indentation for the block, and changes the meaning
+ of the previous two lines.
+
+The first three lines end up being interepreted as a definition, line this:
+
+This is a line.
+   No wait, now it's a definition!
